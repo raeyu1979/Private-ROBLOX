@@ -25,22 +25,7 @@ local BulletColors = {
     "Really black",   "Really white",   "Toothpaste",     "Gold",
     "Lime green",     "Hot pink",       "Teal",           "Electric blue"
 }
-
-local FoodItems = {
-    "Chicken", "Cranberry", "Pizza", "Hamburger", "Taco", "Flower"
-}
-
-local Weapons = {
-    "Golden AK-47", "Sniper", "AK-47", "Uzi", "Shotgun", "Silencer", "Tactical Shotgun", "Grenade", "Ray Gun"
-}
-
-local Accessories = {
-    "Mask"
-}
-
-local Shields = {
-    "Medium Shield", "High-Medium Shield"
-}
+    
 
 local Players = game:GetService("Players")
 local HttpService = game:GetService("HttpService")
