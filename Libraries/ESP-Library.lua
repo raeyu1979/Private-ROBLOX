@@ -26,7 +26,7 @@ function Library.new()
         MaxDistance = 2000,
         
         
-        RefreshRate = 10, 
+        RefreshRate = 144, 
         OutlineThickness = 1,
         TextSize = 13,
         InfoOffset = 20,
@@ -36,10 +36,10 @@ function Library.new()
             Enabled = true,
             
             Boxes = {
-                Enabled = true,
+                Enabled = false,
                 Color = Color3.fromRGB(255, 0, 0),
                 Transparency = 1,
-                Outline = true,
+                Outline = false,
                 OutlineColor = Color3.fromRGB(0, 0, 0),
                 OutlineTransparency = 1,
                 FillColor = Color3.fromRGB(255, 0, 0),
@@ -48,10 +48,10 @@ function Library.new()
             },
             
             Names = {
-                Enabled = true,
+                Enabled = false,
                 Color = Color3.fromRGB(255, 255, 255),
                 Transparency = 1,
-                Outline = true,
+                Outline = false,
                 OutlineColor = Color3.fromRGB(0, 0, 0),
                 OutlineTransparency = 1,
                 Font = 2, 
@@ -62,7 +62,7 @@ function Library.new()
             },
             
             HealthBar = {
-                Enabled = true,
+                Enabled = false,
                 Color = Color3.fromRGB(0, 255, 0),
                 Transparency = 1,
                 OutlineColor = Color3.fromRGB(0, 0, 0),
@@ -70,7 +70,7 @@ function Library.new()
                 Position = "Left", 
                 ShowHealthText = false,
                 HealthTextColor = Color3.fromRGB(255, 255, 255),
-                HealthTextOutline = true,
+                HealthTextOutline = false,
                 HealthTextOutlineColor = Color3.fromRGB(0, 0, 0),
                 HealthTextSize = 13
             },
