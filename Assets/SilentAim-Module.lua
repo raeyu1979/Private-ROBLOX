@@ -1,5 +1,7 @@
+return function()
+
 -- // Configurations
-getgenv().SilentAimSettings = {
+local SilentAimSettings = {
 
 
     -- \\ General
@@ -51,8 +53,6 @@ local Players           =       game:GetService("Players")
 local RunService        =       game:GetService("RunService")
 local UserInputService  =       game:GetService("UserInputService")
 
-
-local SilentAimSettings        =        getgenv().SilentAimSettings
 
 local Camera                    =       workspace.CurrentCamera
 local LocalPlayer               =       Players.LocalPlayer
@@ -256,3 +256,6 @@ oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
     return oldNamecall(...)
 end))
 -- ==========================================================================================================
+
+return SilentAimSettings
+end
