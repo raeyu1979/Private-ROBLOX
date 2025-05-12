@@ -74,10 +74,6 @@ return {
 
     BulletEffects = BulletEffects,
     BulletColors = BulletColors,
-    FoodItems = FoodItems,
-    Weapons = Weapons,
-    Accessories = Accessories,
-    Shields = Shields,
 
     UpdateEquipInventory = UpdateEquipInventory,
     FakeInventory = FakeInventory
