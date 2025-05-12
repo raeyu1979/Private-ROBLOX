@@ -4,37 +4,37 @@ local SilentAimSettings = {
 
 
     -- \\ General
-    Enabled         =      true,
-    VisibleCheck    =      true,
+    Enabled         =      false,
+    VisibleCheck    =      false,
     TargetPart      =      "Head",
-    DownCheck       =      true,
+    DownCheck       =      false,
 
 
     -- \\ Prediction
     Prediction      = {
-        Enabled     =      true,
+        Enabled     =      false,
         Method      =      "AssemblyLinearVelocity",
         Options     = {"AssemblyLinearVelocity", "Velocity", "HumanoidState", "CFrameLerp", "CharacterController", "HumanoidMoveDirection", "SmoothVelocity"},
-        X           =      0.7,
-        Y           =      0.5,
-        Z           =      0.6,
-        TimeScale   =      0.7,
-        DistanceScaling = true,
-        MaxDistance =      1000,
-        MinScale    =      0.4,
-        MaxScale    =      0.7
+        X           =      0,
+        Y           =      0,
+        Z           =      0,
+        TimeScale   =      0,
+        DistanceScaling = false,
+        MaxDistance =      0,
+        MinScale    =      0,
+        MaxScale    =      0
     },
 
 
     -- \\ FOV Circle
-    Visible         =      true,
+    Visible         =      false,
     Filled          =      false,
-    Radius          =      100,
+    Radius          =      0,
     Color           =    Color3.fromRGB(98, 114, 164),
-    Transparency    =      1,
-    Thickness       =      1,
+    Transparency    =      0,
+    Thickness       =      0,
     ZIndex          =      999,
-    NumSides        =      100,
+    NumSides        =      0,
     Rainbow         =      false,
     RainbowSpeed    =      0,
 
