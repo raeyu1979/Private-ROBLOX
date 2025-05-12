@@ -1,6 +1,6 @@
 return function()
     -- // Configurations
-    getgenv().LocalPlayerSettings = {
+local LocalPlayerSettings = {
     
     
         -- \\ General
