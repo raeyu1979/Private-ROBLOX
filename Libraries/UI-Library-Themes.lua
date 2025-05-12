@@ -51,5 +51,57 @@ return function(ReGui)
         RegionBgTransparency = 1
     })
 
-    return {"Dracula", "Solarized"}
+    ReGui:DefineTheme("Oceanic", {
+        TitleAlign = Enum.TextXAlignment.Center,
+
+        Text = Color3.fromRGB(204, 255, 255),
+        TextDisabled = Color3.fromRGB(144, 182, 184),
+        CollapsingHeaderText = Color3.fromRGB(204, 255, 255),
+
+        FrameBg = Color3.fromRGB(0, 32, 41),
+        FrameBgTransparency = 0.2,
+        FrameBgActive = Color3.fromRGB(0, 48, 61),
+        FrameBgTransparencyActive = 0.1,
+
+        CheckMark = Color3.fromRGB(44, 219, 237),
+        SliderGrab = Color3.fromRGB(77, 179, 185),
+        ButtonsBg = Color3.fromRGB(38, 129, 150),
+        CollapsingHeaderBg = Color3.fromRGB(0, 48, 61),
+        RadioButtonHoveredBg = Color3.fromRGB(52, 199, 210),
+
+        WindowBg = Color3.fromRGB(0, 32, 41),
+        TitleBarBg = Color3.fromRGB(0, 32, 41),
+        TitleBarBgActive = Color3.fromRGB(0, 48, 61),
+        Border = Color3.fromRGB(144, 182, 184),
+        ResizeGrab = Color3.fromRGB(77, 179, 185),
+        RegionBgTransparency = 1
+    })
+
+    ReGui:DefineTheme("Sunset", {
+        TitleAlign = Enum.TextXAlignment.Center,
+
+        Text = Color3.fromRGB(255, 216, 154),
+        TextDisabled = Color3.fromRGB(205, 139, 97),
+        CollapsingHeaderText = Color3.fromRGB(255, 216, 154),
+
+        FrameBg = Color3.fromRGB(46, 35, 20),
+        FrameBgTransparency = 0.2,
+        FrameBgActive = Color3.fromRGB(72, 51, 30),
+        FrameBgTransparencyActive = 0.1,
+
+        CheckMark = Color3.fromRGB(253, 121, 82),
+        SliderGrab = Color3.fromRGB(247, 150, 79),
+        ButtonsBg = Color3.fromRGB(255, 140, 0),
+        CollapsingHeaderBg = Color3.fromRGB(72, 51, 30),
+        RadioButtonHoveredBg = Color3.fromRGB(255, 186, 88),
+
+        WindowBg = Color3.fromRGB(46, 35, 20),
+        TitleBarBg = Color3.fromRGB(46, 35, 20),
+        TitleBarBgActive = Color3.fromRGB(72, 51, 30),
+        Border = Color3.fromRGB(205, 139, 97),
+        ResizeGrab = Color3.fromRGB(247, 150, 79),
+        RegionBgTransparency = 1
+    })
+
+    return {"Dracula", "Solarized", "Oceanic", "Sunset"}
 end
