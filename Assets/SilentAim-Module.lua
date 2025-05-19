@@ -1,8 +1,8 @@
 return function()
--- // Configurations
-local SilentAimSettings = {
-
-
+   -- // Configurations
+   local SilentAimSettings = {
+    
+    
     -- \\ General
     Enabled         =      false,
     VisibleCheck    =      false,
@@ -14,7 +14,7 @@ local SilentAimSettings = {
     Prediction      = {
         Enabled     =      false,
         Method      =      "AssemblyLinearVelocity",
-        Options     = {"AssemblyLinearVelocity", "Velocity", "HumanoidState", "CFrameLerp", "CharacterController", "HumanoidMoveDirection", "SmoothVelocity"},
+        Options     = {"AssemblyLinearVelocity", "HumanoidMoveDirection"},
         X           =      0,
         Y           =      0,
         Z           =      0,
@@ -24,6 +24,12 @@ local SilentAimSettings = {
         MinScale    =      0,
         MaxScale    =      0
     },
+
+
+    -- \\ Spread
+    ShotgunMode     =      false,
+    SpreadFactor    =      0,
+    SpreadDistance  =      0,
 
 
     -- \\ FOV Circle
@@ -74,6 +80,7 @@ local GetMouseLocation          =       UserInputService.GetMouseLocation
 local MatchingArgumentCount     =       0
 local oldNamecall               =       nil
 local ColorHue                  =       0
+local RevolverEquipped          =       false
 -- ======================================================================
 
 
@@ -127,6 +134,41 @@ end
 
 
 
+
+local function ApplyShotgunSpread(Direction, SpreadFactor, DistanceToTarget)
+if not SilentAimSettings.ShotgunMode or RevolverEquipped then
+    return Direction
+end
+
+-- Use the user's SpreadFactor directly without additional multipliers
+local UserSpreadFactor = SilentAimSettings.SpreadFactor
+
+-- Use the spread distance setting directly
+local BaseSpread = SilentAimSettings.SpreadDistance
+
+-- Generate spread values that ensure consistent spread 
+local function generateSpread()
+    -- Get a random value between 0.3 and 1.0
+    local value = math.random() * 0.7 + 0.3
+    -- 50% chance to be negative
+    return math.random() < 0.5 and -value or value
+end
+
+-- Apply spread according to the user's factor settings
+local SpreadX = generateSpread() * BaseSpread * UserSpreadFactor
+local SpreadY = generateSpread() * BaseSpread * UserSpreadFactor
+local SpreadZ = generateSpread() * BaseSpread * UserSpreadFactor
+
+-- Apply the spread to the direction vector
+local SpreadVector = Vector3.new(
+    Direction.X + SpreadX,
+    Direction.Y + SpreadY,
+    Direction.Z + SpreadZ
+)
+
+local OriginalMagnitude = Direction.Magnitude
+return SpreadVector.Unit * OriginalMagnitude
+end
 
 -- // ValidateArguments
 local function ValidateArguments(Arguments, RayMethodDefinition)
@@ -263,8 +305,7 @@ oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
                             if SilentAimSettings.Prediction.DistanceScaling then
                                 local DistanceFactor = math.min(Distance / SilentAimSettings.Prediction.MaxDistance, 1)
                                 TimeScale = SilentAimSettings.Prediction.MinScale +
-                                    (SilentAimSettings.Prediction.MaxScale - SilentAimSettings.Prediction.MinScale) *
-                                    DistanceFactor
+                                    (SilentAimSettings.Prediction.MaxScale - SilentAimSettings.Prediction.MinScale) * DistanceFactor
                             end
                         end
 
@@ -272,97 +313,6 @@ oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
 
                         if PredictionMethod == "AssemblyLinearVelocity" and HitPart.AssemblyLinearVelocity then
                             VelocityVector = HitPart.AssemblyLinearVelocity
-
-                        elseif PredictionMethod == "Velocity" and HitPart.Velocity then
-                            VelocityVector = HitPart.Velocity
-
-                        elseif PredictionMethod == "HumanoidState" and Humanoid and Humanoid.MoveDirection.Magnitude > 0 then
-                            VelocityVector = Humanoid.MoveDirection * Humanoid.WalkSpeed
-
-                        elseif PredictionMethod == "CFrameLerp" and HumanoidRootPart then
-                            if not HumanoidRootPart.PreviousPositionData then
-                                HumanoidRootPart.PreviousPositionData = {
-                                    Positions = {},
-                                    LastUpdate = tick()
-                                }
-                            end
-
-                            local CurrentTime = tick()
-                            local TimeDelta = CurrentTime - HumanoidRootPart.PreviousPositionData.LastUpdate
-
-                            if TimeDelta > 0.015 then
-                                table.insert(HumanoidRootPart.PreviousPositionData.Positions, {
-                                    Position = HumanoidRootPart.Position,
-                                    Timestamp = CurrentTime
-                                })
-
-                                if #HumanoidRootPart.PreviousPositionData.Positions > 5 then
-                                    table.remove(HumanoidRootPart.PreviousPositionData.Positions, 1)
-                                end
-
-                                HumanoidRootPart.PreviousPositionData.LastUpdate = CurrentTime
-                            end
-
-                            if #HumanoidRootPart.PreviousPositionData.Positions >= 2 then
-                                local NewestRecord = HumanoidRootPart.PreviousPositionData.Positions[#HumanoidRootPart.PreviousPositionData.Positions]
-                                local OldestRecord = HumanoidRootPart.PreviousPositionData.Positions[1]
-
-                                local PositionDelta = NewestRecord.Position - OldestRecord.Position
-                                local TimeDiff = NewestRecord.Timestamp - OldestRecord.Timestamp
-
-                                if TimeDiff > 0 then
-                                    VelocityVector = PositionDelta / TimeDiff
-                                end
-                            end
-
-                        elseif PredictionMethod == "CharacterController" and HumanoidRootPart then
-                            if not HumanoidRootPart.ControllerHistory then
-                                HumanoidRootPart.ControllerHistory = {
-                                    Positions = {},
-                                    Velocities = {},
-                                    LastUpdate = tick()
-                                }
-                            end
-
-                            local CurrentTime = tick()
-                            local TimeDelta = CurrentTime - HumanoidRootPart.ControllerHistory.LastUpdate
-
-                            if TimeDelta > 0.02 then
-                                table.insert(HumanoidRootPart.ControllerHistory.Positions, HumanoidRootPart.Position)
-
-                                if #HumanoidRootPart.ControllerHistory.Positions > 1 then
-                                    local CurrentPos = HumanoidRootPart.ControllerHistory.Positions[#HumanoidRootPart.ControllerHistory.Positions]
-                                    local PrevPos = HumanoidRootPart.ControllerHistory.Positions[#HumanoidRootPart.ControllerHistory.Positions - 1]
-                                    local InstantVelocity = (CurrentPos - PrevPos) / TimeDelta
-
-                                    table.insert(HumanoidRootPart.ControllerHistory.Velocities, InstantVelocity)
-                                end
-
-                                if #HumanoidRootPart.ControllerHistory.Positions > 4 then
-                                    table.remove(HumanoidRootPart.ControllerHistory.Positions, 1)
-                                end
-
-                                if #HumanoidRootPart.ControllerHistory.Velocities > 4 then
-                                    table.remove(HumanoidRootPart.ControllerHistory.Velocities, 1)
-                                end
-
-                                HumanoidRootPart.ControllerHistory.LastUpdate = CurrentTime
-                            end
-
-                            if #HumanoidRootPart.ControllerHistory.Velocities > 0 then
-                                local WeightedVelocity = Vector3.new(0, 0, 0)
-                                local TotalWeight = 0
-
-                                for i, Velocity in ipairs(HumanoidRootPart.ControllerHistory.Velocities) do
-                                    local Weight = i / #HumanoidRootPart.ControllerHistory.Velocities
-                                    WeightedVelocity = WeightedVelocity + (Velocity * Weight)
-                                    TotalWeight = TotalWeight + Weight
-                                end
-
-                                if TotalWeight > 0 then
-                                    VelocityVector = WeightedVelocity / TotalWeight
-                                end
-                            end
 
                         elseif PredictionMethod == "HumanoidMoveDirection" and Humanoid then
                             if Humanoid.MoveDirection.Magnitude > 0 then
@@ -376,38 +326,6 @@ oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
 
                                 VelocityVector = Humanoid.MoveDirection * (Humanoid.WalkSpeed * SpeedMultiplier)
                             end
-
-                        elseif PredictionMethod == "SmoothVelocity" then
-                            if not Character.SmoothVelocityData then
-                                Character.SmoothVelocityData = {
-                                    CurrentVelocity = Vector3.new(0, 0, 0),
-                                    SmoothFactor = 0.8,
-                                    LastUpdate = tick()
-                                }
-                            end
-
-                            local CurrentVelocity = Vector3.new(0, 0, 0)
-
-                            if HitPart.AssemblyLinearVelocity then
-                                CurrentVelocity = HitPart.AssemblyLinearVelocity
-                            elseif HitPart.Velocity then
-                                CurrentVelocity = HitPart.Velocity
-                            elseif Humanoid and Humanoid.MoveDirection.Magnitude > 0 then
-                                CurrentVelocity = Humanoid.MoveDirection * (Humanoid.WalkSpeed or 16)
-                            end
-
-                            local Alpha = 1 - Character.SmoothVelocityData.SmoothFactor
-                            Character.SmoothVelocityData.CurrentVelocity =
-                                Character.SmoothVelocityData.CurrentVelocity * Character.SmoothVelocityData.SmoothFactor +
-                                CurrentVelocity * Alpha
-
-                            VelocityVector = Vector3.new(
-                                Character.SmoothVelocityData.CurrentVelocity.X,
-                                Character.SmoothVelocityData.CurrentVelocity.Y * 0.65,
-                                Character.SmoothVelocityData.CurrentVelocity.Z
-                            )
-
-                            Character.SmoothVelocityData.LastUpdate = tick()
                         end
 
                         local GravityCompensation = 0.03
@@ -426,7 +344,12 @@ oldNamecall = hookmetamethod(game, "__namecall", newcclosure(function(...)
 
                     PredictedPosition = PredictedPosition + Vector3.new(0, 0.5, 0)
 
-                    Arguments[3] = getDirection(A_Origin, PredictedPosition)
+                    local Direction = getDirection(A_Origin, PredictedPosition)
+                    
+                    local Distance = (A_Origin - PredictedPosition).Magnitude
+                    Direction = ApplyShotgunSpread(Direction, SilentAimSettings.SpreadFactor, Distance)
+                    
+                    Arguments[3] = Direction
 
                     return oldNamecall(unpack(Arguments))
                 end
